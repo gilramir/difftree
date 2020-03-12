@@ -11,11 +11,11 @@ import (
 )
 
 type Application struct {
-	checkHashes bool
-	logfileName string
-	firstDirectory string
+	checkHashes     bool
+	logfileName     string
+	firstDirectory  string
 	secondDirectory string
-	ignoreFiles []string
+	ignoreFiles     []string
 }
 
 func (self *Application) Run() {
@@ -40,10 +40,10 @@ func (self *Application) Run() {
 	options.CheckHashes = self.checkHashes
 
 	/*
-	options.IgnoreFiles = make(map[string]bool)
-	for _, name := range ignoreFiles {
-		options.IgnoreFiles[name] = true
-	}
+		options.IgnoreFiles = make(map[string]bool)
+		for _, name := range ignoreFiles {
+			options.IgnoreFiles[name] = true
+		}
 	*/
 
 	err := engine.Compare(self.firstDirectory, self.secondDirectory, &options)

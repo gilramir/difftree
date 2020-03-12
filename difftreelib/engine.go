@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
-
 )
 
 /*
@@ -37,15 +36,15 @@ import (
 */
 
 type DifftreeOptions struct {
-    CheckHashes bool
-    IgnoreFiles map[string]bool
+	CheckHashes bool
+	IgnoreFiles map[string]bool
 }
 
 func (s *ComparisonEngine) Compare(path1 string, path2 string, options *DifftreeOptions) error {
 
-    // No trailing slashes, etc.
-    path1 = path.Clean(path1)
-    path2 = path.Clean(path2)
+	// No trailing slashes, etc.
+	path1 = path.Clean(path1)
+	path2 = path.Clean(path2)
 
 	numWorkers := runtime.NumCPU()
 
@@ -100,7 +99,8 @@ func (s *ComparisonEngine) readTreeEntries(path1 string, path2 string,
 
 	var order int
 
-	/* (void) */ filepath.Walk(path1, func(path string, info os.FileInfo, err error) error {
+	/* (void) */
+	filepath.Walk(path1, func(path string, info os.FileInfo, err error) error {
 		// Get a blank treeEntry
 		entry, ok := <-blankEntryChan
 		defer func() {
@@ -127,18 +127,18 @@ func (s *ComparisonEngine) readTreeEntries(path1 string, path2 string,
 			return nil
 		}
 
-        // Should we skip it?
-        basename := filepath.Base(path)
-        if _, has := options.IgnoreFiles[basename] ; has {
-            entry.result = kIgnored
-            if info.IsDir() {
-                // Don't descend into "path" (a directory)
-                return filepath.SkipDir
-            } else {
-                // Keep going
-                return nil
-            }
-        }
+		// Should we skip it?
+		basename := filepath.Base(path)
+		if _, has := options.IgnoreFiles[basename]; has {
+			entry.result = kIgnored
+			if info.IsDir() {
+				// Don't descend into "path" (a directory)
+				return filepath.SkipDir
+			} else {
+				// Keep going
+				return nil
+			}
+		}
 
 		// If path is a dir, does path2's path exist? If not, skip.
 		if info.IsDir() {
@@ -163,10 +163,10 @@ func (s *ComparisonEngine) compareEntries(path2 string, entryChan chan *treeEntr
 	defer close(responseChan)
 
 	for entry := range entryChan {
-        if entry.result == kIgnored {
-            responseChan <- entry
-            continue
-        }
+		if entry.result == kIgnored {
+			responseChan <- entry
+			continue
+		}
 
 		if !entry.hasInfo2 {
 			entry.computePath2(s.path1RootLen, path2)

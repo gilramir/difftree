@@ -26,7 +26,7 @@ const (
 	kDirSameEntries
 	kDirDifferentEntries
 	kError
-    kIgnored
+	kIgnored
 )
 
 type treeEntry struct {
@@ -80,9 +80,9 @@ func translateModeType(fileType os.FileMode) string {
 
 func (self *treeEntry) comparePaths(options *DifftreeOptions) {
 	var statErr error
-    if self.result == kIgnored {
-        panic(fmt.Sprintf("%s is ignored but compared", self.path1))
-    }
+	if self.result == kIgnored {
+		panic(fmt.Sprintf("%s is ignored but compared", self.path1))
+	}
 	if !self.hasInfo2 {
 		self.info2, statErr = os.Lstat(self.path2)
 		if statErr != nil {
@@ -111,13 +111,13 @@ func (self *treeEntry) comparePaths(options *DifftreeOptions) {
 		return
 	}
 
-    // Same permissions?
-    if self.info1.Mode().Perm() != self.info2.Mode().Perm() {
+	// Same permissions?
+	if self.info1.Mode().Perm() != self.info2.Mode().Perm() {
 		self.result = kDifferentPermissions
 		self.description = fmt.Sprintf("file1 has perms %s, but file2 has %s",
 			self.info1.Mode().String(), self.info2.Mode().String())
 		return
-    }
+	}
 
 	// Are these directories?
 	if self.info1.IsDir() {
@@ -141,9 +141,9 @@ func readDirectoryIntoSet(directory string, options *DifftreeOptions) (mapset.Se
 	}
 
 	for _, dirEntry := range dirEntries {
-        if _, has := options.IgnoreFiles[dirEntry.Name()]; has {
-            continue
-        }
+		if _, has := options.IgnoreFiles[dirEntry.Name()]; has {
+			continue
+		}
 		set.Add(dirEntry.Name())
 	}
 	return set, nil
@@ -164,14 +164,14 @@ func (self *treeEntry) compareDirectories(options *DifftreeOptions) {
 	if err != nil {
 		self.result = kError
 		self.err = err
-        return
+		return
 	}
 
 	dir2Set, err := readDirectoryIntoSet(self.path2, options)
 	if err != nil {
 		self.result = kError
 		self.err = err
-        return
+		return
 	}
 
 	if dir1Set.Equal(dir2Set) {
@@ -240,28 +240,28 @@ func (self *treeEntry) compareRegularFiles(options *DifftreeOptions) {
 	}
 
 	// Same size.... but same contents?
-    if options.CheckHashes {
-        hash1, err := getFileHash(self.path1)
-        if err != nil {
-            self.result = kError
-            self.err = err
-        }
-        hash2, err := getFileHash(self.path2)
-        if err != nil {
-            self.result = kError
-            self.err = err
-        }
+	if options.CheckHashes {
+		hash1, err := getFileHash(self.path1)
+		if err != nil {
+			self.result = kError
+			self.err = err
+		}
+		hash2, err := getFileHash(self.path2)
+		if err != nil {
+			self.result = kError
+			self.err = err
+		}
 
-        if cmpByteSlices(hash1, hash2) {
-            self.result = kPerfectMatch
-        } else {
-            self.result = kMismatch
-            self.description = fmt.Sprintf(
-                "file1 hash SHA1 %s, file2 has SHA1 %s",
-                hex.EncodeToString(hash1),
-                hex.EncodeToString(hash2))
-        }
-    } else {
-        self.result = kPerfectMatch
-    }
+		if cmpByteSlices(hash1, hash2) {
+			self.result = kPerfectMatch
+		} else {
+			self.result = kMismatch
+			self.description = fmt.Sprintf(
+				"file1 hash SHA1 %s, file2 has SHA1 %s",
+				hex.EncodeToString(hash1),
+				hex.EncodeToString(hash2))
+		}
+	} else {
+		self.result = kPerfectMatch
+	}
 }
