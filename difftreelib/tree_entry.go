@@ -183,13 +183,14 @@ func (self *treeEntry) compareDirectories(options *DifftreeOptions) {
 	dir1extra := dir1Set.Difference(dir2Set)
 	dir2extra := dir2Set.Difference(dir1Set)
 
+	self.description = ""
 	if dir1extra.Cardinality() > 0 {
-		self.description = "dir1 has these extra entries that are missing from dir2:\n"
+		self.description += "dir1 has these extra entries that are missing from dir2:\n"
 		self.description += createEnumeratedList(dir1extra) + "\n"
 	}
 
 	if dir2extra.Cardinality() > 0 {
-		self.description = "dir2 has these extra entries that are missing from dir1:\n"
+		self.description += "dir2 has these extra entries that are missing from dir1:\n"
 		self.description += createEnumeratedList(dir2extra) + "\n"
 	}
 }

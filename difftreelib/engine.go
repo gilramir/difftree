@@ -170,7 +170,6 @@ func (s *ComparisonEngine) compareEntries(path2 string, entryChan chan *treeEntr
 
 		if !entry.hasInfo2 {
 			entry.computePath2(s.path1RootLen, path2)
-			// entry.comparePaths() will do the os.Lstat()
 		}
 
 		entry.comparePaths(options)
